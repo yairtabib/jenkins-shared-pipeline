@@ -6,7 +6,7 @@
 #   GITHUB_WEBHOOK_SECRET
 #   KOALA_TOKEN, KOALA_USERNAME
 
-jenkinsConfiguration:
+jenkins:
   systemMessage: "securingsam Jenkins — embedded C/networking CI"
   numExecutors: 0
   mode: NORMAL
