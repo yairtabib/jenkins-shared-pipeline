@@ -1,0 +1,63 @@
+# Jenkins Configuration as Code (JCasC)
+# All secrets injected via environment variables — NEVER hardcode values here.
+#
+# Required environment variables (set in docker/.env):
+#   JENKINS_ADMIN_USER, JENKINS_ADMIN_PASSWORD
+#   GITHUB_WEBHOOK_SECRET
+#   KOALA_TOKEN, KOALA_USERNAME
+
+jenkinsConfiguration:
+  systemMessage: "securingsam Jenkins — embedded C/networking CI"
+  numExecutors: 0
+  mode: NORMAL
+
+  globalLibraries:
+    libraries:
+      - name: "securingsam-shared-pipeline"
+        defaultVersion: "main"
+        implicit: false
+        allowVersionOverride: true
+        includeInChangesets: true
+        retriever:
+          modernSCM:
+            scm:
+              git:
+                remote: "https://github.com/yairtabib/jenkins-shared-pipeline.git"
+                # After org transfer, update to:
+                # remote: "https://github.com/securingsam/jenkins-shared-pipeline.git"
+
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "${JENKINS_ADMIN_USER}"
+          password: "${JENKINS_ADMIN_PASSWORD}"
+          name: "Admin"
+
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "Overall/Administer:${JENKINS_ADMIN_USER}"
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - string:
+              id: "koala-token"
+              description: "Koala lab API token"
+              secret: "${KOALA_TOKEN}"
+          - string:
+              id: "koala-username"
+              description: "Koala lab username"
+              secret: "${KOALA_USERNAME}"
+          - string:
+              id: "github-webhook-secret"
+              description: "GitHub webhook HMAC secret"
+              secret: "${GITHUB_WEBHOOK_SECRET}"
+
+unclassified:
+  timestamper:
+    allPipelines: true
+  githubplugin:
+    hookUrl: "https://jenkins.ci.securingsam.io/github-webhook/"

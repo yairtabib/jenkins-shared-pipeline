@@ -1,0 +1,17 @@
+configuration-as-code:latest
+pipeline-stage-view:latest
+git:latest
+github:latest
+github-branch-source:latest
+workflow-aggregator:latest
+credentials:latest
+credentials-binding:latest
+plain-credentials:latest
+ws-cleanup:latest
+timestamper:latest
+ansicolor:latest
+junit:latest
+build-timeout:latest
+matrix-auth:latest
+ssh-agent:latest
+ssh-credentials:latest

@@ -1,0 +1,35 @@
+services:
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: jenkins
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - ./casc:/var/jenkins_casc:ro
+      - ./plugins.txt:/usr/share/jenkins/ref/plugins.txt:ro
+    environment:
+      - CASC_JENKINS_CONFIG=/var/jenkins_casc/jenkins.yaml
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+    env_file:
+      - .env
+    networks:
+      - jenkins
+
+  jenkins-agent:
+    image: jenkins/ssh-agent:latest-jdk17
+    container_name: jenkins-agent
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - jenkins
+
+volumes:
+  jenkins_home:
+
+networks:
+  jenkins:
+    driver: bridge
